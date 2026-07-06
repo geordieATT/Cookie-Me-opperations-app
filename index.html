@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cookie & Me — Kitchen Manager v45.0</title>
+<title>Cookie & Me — Kitchen Manager v46.0</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="document.write('<script src=\'https://unpkg.com/@supabase/supabase-js@2\'><\/script>')"></script>
 <style>
 :root {
@@ -126,6 +126,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
 .tag-gray { background: rgba(0,0,0,0.08); color: #6e6e73; }
 .tag-orange { background: rgba(255,105,52,0.1); color: #c94e00; }
 .tag-quickadd { background: rgba(255,159,10,0.1); color: #b45309; border: 1px dashed rgba(255,159,10,0.4); }
+.tag-gold { background: linear-gradient(135deg, #fff0a0, #ffd700); color: #7a5800; border: 1px solid #e6b800; font-weight: 700; animation: goldSparkle 1.8s ease-in-out infinite; }
+@keyframes goldSparkle {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); filter: brightness(1); }
+  50% { box-shadow: 0 0 8px 3px rgba(255,215,0,0.5); filter: brightness(1.12); }
+}
 /* Customer picker widget */
 .cust-picker-wrap { position: relative; }
 .cust-picker-dropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid rgba(0,0,0,0.12); border-radius: var(--radius); z-index: 300; max-height: 200px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05); }
@@ -572,6 +577,48 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
   padding: 28px 24px; max-width: 320px; width: 100%; text-align: center;
   box-shadow: 0 8px 40px rgba(0,0,0,0.25);
 }
+/* ── Campaign table (cookie-leads style) ── */
+.camp-subnav { position:sticky; top:56px; z-index:9; background:rgba(250,250,252,0.95); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid rgba(0,0,0,0.08); min-height:46px; display:flex; align-items:center; padding:0 16px; gap:10px; flex-wrap:wrap; }
+.camp-subnav-divider { width:1px; height:18px; background:rgba(0,0,0,0.12); flex-shrink:0; }
+.camp-select { border:1px solid rgba(0,0,0,0.15); background:#f5f5f7; border-radius:8px; padding:6px 10px; font-size:14px; color:#1d1d1f; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; max-width:260px; }
+.camp-select:focus { outline:none; border-color:#0071e3; box-shadow:0 0 0 3px rgba(0,113,227,0.2); }
+.camp-stab { background:none; border:none; padding:6px 12px; border-radius:7px; font-size:13px; font-weight:500; color:#6e6e73; cursor:pointer; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; white-space:nowrap; }
+.camp-stab.active { background:rgba(0,0,0,0.08); color:#1d1d1f; }
+.camp-stab:hover:not(.active) { background:rgba(0,0,0,0.04); }
+.camp-header-block { padding:16px 20px 12px; }
+.camp-title { font-size:20px; font-weight:700; color:#1d1d1f; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; }
+.camp-meta { font-size:13px; color:#6e6e73; margin-top:4px; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; }
+.camp-main { padding:20px; }
+.camp-stats-bar { display:grid; grid-template-columns:repeat(auto-fit,minmax(80px,1fr)); gap:10px; text-align:center; background:#1d1d1f; border-radius:12px; padding:14px; margin-bottom:16px; }
+.camp-stat-val { font-size:20px; font-weight:700; color:white; }
+.camp-stat-lbl { font-size:10px; color:rgba(255,255,255,0.65); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; margin-top:2px; }
+.eng-table-card { background:white; border-radius:14px; box-shadow:0 2px 16px rgba(0,0,0,0.07),0 0 0 1px rgba(0,0,0,0.05); overflow:hidden; margin-bottom:16px; }
+.eng-table-wrap { overflow-x:auto; }
+.eng-table { width:100%; border-collapse:collapse; }
+.eng-table thead th { background:#f5f5f7; font-size:11px; font-weight:600; color:#6e6e73; text-transform:uppercase; letter-spacing:0.05em; padding:10px 12px; border-bottom:1px solid rgba(0,0,0,0.06); text-align:left; white-space:nowrap; }
+.eng-table thead th.th-expand { width:36px; padding:10px 6px; }
+.eng-table thead th.th-actions { width:60px; }
+.eng-table tbody tr.eng-data-row { border-bottom:1px solid rgba(0,0,0,0.055); }
+.eng-table tbody tr.eng-data-row:hover { background:#f5f5f7; }
+.eng-table td { padding:0; vertical-align:middle; }
+.eng-cell { padding:10px 12px; min-height:40px; display:flex; align-items:center; font-size:13px; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; color:#1d1d1f; }
+.eng-expand-btn { border:none; background:none; color:#6e6e73; cursor:pointer; font-size:11px; padding:6px 8px; transition:transform 0.15s; line-height:1; display:block; }
+.eng-expand-btn.open { transform:rotate(90deg); }
+.eng-detail-row { display:none; }
+.eng-detail-row.open { display:table-row; }
+.eng-detail-panel { background:#f9f9f9; border-top:1px solid rgba(0,0,0,0.06); padding:14px 16px; }
+.eng-detail-section { margin-bottom:10px; }
+.eng-detail-label { font-size:10px; font-weight:700; color:#6e6e73; text-transform:uppercase; letter-spacing:0.06em; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; margin-bottom:5px; }
+.eng-add-row-btn { color:#0071e3; font-size:13px; font-weight:500; border:none; background:none; cursor:pointer; padding:10px 16px; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif; display:block; width:100%; text-align:left; }
+.eng-add-row-btn:hover { background:#f5f5f7; }
+.pay-pill-Paid { background:rgba(52,199,89,0.12); color:#1a7f37; }
+.pay-pill-Partial { background:rgba(255,105,52,0.1); color:#c0541c; }
+.pay-pill-Unpaid { background:rgba(255,159,10,0.1); color:#b45309; }
+.eng-pill-Open { background:rgba(0,0,0,0.06); color:#1d1d1f; }
+.eng-pill-Closed { background:rgba(52,199,89,0.12); color:#1a7f37; }
+.camp-form-slide { background:white; border-bottom:1px solid rgba(0,0,0,0.1); display:none; }
+.camp-form-slide.open { display:block; }
+.camp-form-inner { padding:20px; max-width:680px; margin:0 auto; }
 </style>
 </head>
 <body>
@@ -3750,6 +3797,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
             <option value="Ready">Ready</option>
             <option value="Delivered">Delivered</option>
             <option value="Paid">Paid</option>
+            <option value="Completed">✨ Completed</option>
           </select>
         </div>
         <div class="field"><label>Notes</label><textarea id="of-notes" placeholder="Any notes about this order..."></textarea></div>
@@ -3784,6 +3832,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
             <option value="Cookies iced">Cookies iced</option>
             <option value="Packaged">Packaged</option>
             <option value="Delivered">Delivered</option>
+            <option value="Completed">✨ Completed</option>
             <option value="Cancelled">Cancelled</option>
           </select>
         </div>
@@ -3895,6 +3944,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
                 <option value="Cookies iced">④ Cookies iced</option>
                 <option value="Packaged">⑤ Packaged</option>
                 <option value="Delivered">⑥ Delivered</option>
+                <option value="Completed">✨ Completed</option>
                 <option value="Cancelled">Cancelled</option>
               </select>
             </div>
@@ -6208,7 +6258,7 @@ function addIcingEntry() {
 
 function _addIcingRecipRowToContainer(container, prefill) {
   var idx = Date.now();
-  var openOrders = orders.filter(function(o){ return o.status !== 'Delivered' && o.status !== 'Cancelled'; });
+  var openOrders = orders.filter(function(o){ return !CLOSED_STATUSES.includes(o.status); });
   // When pre-filling an existing entry, also include the saved order even if it's now Delivered/Cancelled
   if (prefill && prefill.orderId) {
     var alreadyIn = openOrders.some(function(o){ return String(o.id)===String(prefill.orderId); });
@@ -12980,7 +13030,7 @@ async function deleteChecklistRecord(id, type) {
 function recipientRowHtml(idx, context, orderId, campaignId, nonOrderedType) {
   // Build order options
   var orderOpts = '<option value="">— No order —</option>';
-  (orders||[]).filter(function(o){ return o.status !== 'Delivered' && o.status !== 'Cancelled'; })
+  (orders||[]).filter(function(o){ return !CLOSED_STATUSES.includes(o.status); })
     .sort(function(a,b){ return (a.order_number||'').localeCompare(b.order_number||''); })
     .forEach(function(o){
       var cust = (cfg.customers||[]).find(function(x){ return String(x.id)===String(o.customer_id); });
@@ -17178,7 +17228,7 @@ function _prBuildOrders(orderArr, orderLinesArr, customers) {
     var custPhone = cust ? (cust.phone||'') : '';
     var custEmail = cust ? (cust.email||'') : '';
     var orderNum = o.order_number || ('ORD-' + String(o.id).slice(-4));
-    var statusColours = {Draft:'background:#f3f4f6;color:#374151',Pending:'background:#fff4e0;color:#a05a00','In Progress':'background:#dbeafe;color:#1e40af',Ready:'background:#d1fae5;color:#065f46',Delivered:'background:#ede9fe;color:#5b21b6',Paid:'background:#d1fae5;color:#065f46',Cancelled:'background:#fee2e2;color:#991b1b'};
+    var statusColours = {Draft:'background:#f3f4f6;color:#374151',Pending:'background:#fff4e0;color:#a05a00','In Progress':'background:#dbeafe;color:#1e40af',Ready:'background:#d1fae5;color:#065f46',Delivered:'background:#ede9fe;color:#5b21b6',Paid:'background:#d1fae5;color:#065f46',Cancelled:'background:#fee2e2;color:#991b1b',Completed:'background:linear-gradient(135deg,#fff0a0,#ffd700);color:#7a5800'};
     var statusStyle = statusColours[o.status] || 'background:#f3f4f6;color:#374151';
     var isLast = oi === orderArr.length - 1;
     html += '<div style="page-break-after:'+(isLast?'auto':'always')+';padding-bottom:20px;">';
@@ -21026,9 +21076,9 @@ function renderCustDetailOrders() {
 
   // ── LIVE ORDERS TAB ────────────────────────────────────
   if (custDetailTab === 'live') {
-    const filtered = custOrders.filter(o => !['Delivered','Paid'].includes(o.status))
+    const filtered = custOrders.filter(o => !['Delivered','Paid','Completed'].includes(o.status))
       .sort((a,b) => a.delivery_date.localeCompare(b.delivery_date));
-    const statusColour = {Pending:'tag-gray','In Progress':'tag-amber',Ready:'tag-blue',Delivered:'tag-green',Paid:'tag-green'};
+    const statusColour = {Pending:'tag-gray','In Progress':'tag-amber',Ready:'tag-blue',Delivered:'tag-green',Paid:'tag-green',Completed:'tag-gold'};
     let h = `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 8px;">
       <div class="card-title" style="margin:0;">Live orders</div>
       <button class="btn btn-sm btn-primary" onclick="openOrderForm()">+ New order</button>
@@ -21074,6 +21124,7 @@ function renderCustDetailOrders() {
                 <option value="Ready">Ready</option>
                 <option value="Delivered">Delivered</option>
                 <option value="Paid">Paid</option>
+                <option value="Completed">✨ Completed</option>
               </select>
             </div>
           </div>
@@ -21307,7 +21358,7 @@ async function confirmDeleteOrder(id) {
 
 const ORDER_STAGES = ['Design sent','Design approved','Cookies baked','Cookies iced','Packaged','Delivered'];
 const STAGE_LABELS = ['① Design sent','② Design approved','③ Cookies baked','④ Cookies iced','⑤ Packaged','⑥ Delivered'];
-const CLOSED_STATUSES = ['Delivered','Cancelled'];
+const CLOSED_STATUSES = ['Delivered','Cancelled','Completed'];
 
 let _orfAllergenAckAt = '';
 let _orfLineCount = 0;
@@ -21341,6 +21392,7 @@ function nextStage(status) {
 function stageDots(status) {
   if (!status || status === 'Draft') return '<span style="font-size:11px;color:var(--text-muted);font-family:sans-serif;">Draft</span>';
   if (status === 'Cancelled') return '<span style="font-size:11px;color:var(--danger);font-family:sans-serif;">Cancelled</span>';
+  if (status === 'Completed') return '<span style="font-size:11px;font-weight:700;font-family:sans-serif;animation:goldSparkle 1.8s ease-in-out infinite;color:#7a5800;">✨ Completed</span>';
   return '<span style="font-size:11px;color:var(--text-muted);font-family:sans-serif;">Stage: ' + status + '</span>';
 }
 
@@ -21353,7 +21405,8 @@ function stageTag(status) {
     'Cookies iced':'tag-amber',
     'Packaged':'tag-blue',
     'Delivered':'tag-green',
-    'Cancelled':'tag-gray'
+    'Cancelled':'tag-gray',
+    'Completed':'tag-gold'
   };
   const shortLabels = {
     'Design sent':'① Design sent',
@@ -21361,7 +21414,8 @@ function stageTag(status) {
     'Cookies baked':'③ Baked',
     'Cookies iced':'④ Iced',
     'Packaged':'⑤ Packaged',
-    'Delivered':'⑥ Delivered'
+    'Delivered':'⑥ Delivered',
+    'Completed':'✨ Completed'
   };
   const label = shortLabels[status] || status;
   return `<span class="tag ${colours[status]||'tag-gray'}">${label}</span>`;
@@ -21428,90 +21482,117 @@ function renderOrdersList() {
     const isActive = !CLOSED_STATUSES.includes(o.status);
     const isOverdue = isActive && daysUntil !== null && daysUntil < 0;
     const isDueSoon = isActive && daysUntil !== null && daysUntil >= 0 && daysUntil <= 3;
-    const borderColor = isOverdue ? 'var(--danger)' : isDueSoon ? 'var(--warning)' : 'var(--border)';
+    const flags = getOrderFlags(o.id);
+    const borderColor = flags.allSorted ? 'var(--success)' : isOverdue ? 'var(--danger)' : isDueSoon ? 'var(--warning)' : 'var(--border)';
     const next = nextStage(o.status);
     const orderNum = o.order_number || ('ORD-' + String(o.id).slice(-4));
+    const cardOpacity = flags.allSorted ? 'opacity:0.65;' : '';
+    const strikeStyle = flags.allSorted ? 'text-decoration:line-through;color:var(--text-muted);' : '';
 
-    return `<div class="card" style="margin-bottom:10px;border-left:4px solid ${borderColor};">
-      <!-- Header row -->
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+    return `<div class="card" style="margin-bottom:10px;border-left:4px solid ${borderColor};${cardOpacity}">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+
+        <!-- LEFT: Checkboxes -->
+        <div style="display:flex;flex-direction:column;gap:10px;flex-shrink:0;padding-top:2px;align-items:center;">
+          <label title="Need to message this customer" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;margin:0;">
+            <input type="checkbox" ${flags.needToMessage?'checked':''} onclick="event.stopPropagation();toggleOrderNtm('${o.id}')" style="width:17px;height:17px;cursor:pointer;accent-color:#0071e3;margin:0;"/>
+            <span style="font-size:9px;font-family:sans-serif;color:${flags.needToMessage?'#0071e3':'var(--text-muted)'};line-height:1;user-select:none;">✉</span>
+          </label>
+          <label title="All sorted — mark complete" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;margin:0;">
+            <input type="checkbox" ${flags.allSorted?'checked':''} onclick="event.stopPropagation();toggleOrderSorted('${o.id}')" style="width:17px;height:17px;cursor:pointer;accent-color:#1a7f37;margin:0;"/>
+            <span style="font-size:9px;font-family:sans-serif;color:${flags.allSorted?'#1a7f37':'var(--text-muted)'};line-height:1;user-select:none;">✓</span>
+          </label>
+        </div>
+
+        <!-- RIGHT: Card content -->
         <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <span style="font-weight:700;font-family:sans-serif;font-size:13px;color:var(--navy);">${orderNum}</span>
-            ${stageTag(o.status)}
-            ${o.order_type && o.order_type !== 'sold' ? `<span style="display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:700;font-family:sans-serif;${orfOrderTypeStyle(o.order_type)}">${o.order_type.charAt(0).toUpperCase()+o.order_type.slice(1)}</span>` : ''}
+          <!-- Header row -->
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span style="font-weight:700;font-family:sans-serif;font-size:13px;color:var(--navy);${strikeStyle}">${orderNum}</span>
+                ${stageTag(o.status)}
+                ${o.order_type && o.order_type !== 'sold' ? `<span style="display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:700;font-family:sans-serif;${orfOrderTypeStyle(o.order_type)}">${o.order_type.charAt(0).toUpperCase()+o.order_type.slice(1)}</span>` : ''}
+              </div>
+              <div style="font-weight:600;font-family:sans-serif;font-size:14px;margin-top:2px;${strikeStyle}">${c ? custDisplayName(c) : '<em style="color:var(--text-muted)">Unknown customer</em>'}${o.occasion ? `<span style="font-weight:400;color:var(--text-muted);font-size:13px;"> · ${o.occasion}</span>` : ''}</div>
+            </div>
+            <div style="display:flex;gap:4px;flex-shrink:0;margin-left:8px;">
+              <button class="btn btn-sm" onclick="openEditOrderForm('${o.id}')">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteOrderFromList('${o.id}')">×</button>
+            </div>
           </div>
-          <div style="font-weight:600;font-family:sans-serif;font-size:14px;margin-top:2px;">${c ? custDisplayName(c) : '<em style="color:var(--text-muted)">Unknown customer</em>'}${o.occasion ? `<span style="font-weight:400;color:var(--text-muted);font-size:13px;"> · ${o.occasion}</span>` : ''}</div>
+
+          <!-- Pipeline dots -->
+          <div style="margin-bottom:6px;">${stageDots(o.status)}</div>
+
+          <!-- Dates & quantity -->
+          <div style="font-size:12px;font-family:sans-serif;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;">
+            ${urgDate ? `<span>📅 Due: <strong style="color:${isOverdue?'var(--danger)':isDueSoon?'var(--warning)':'var(--text)'}">${fmtDate(urgDate)}${daysUntil!==null && isActive?' ('+fmtDaysUntil(daysUntil)+')':''}</strong></span>` : ''}
+            ${o.delivery_date && o.delivery_date !== o.due_date ? `<span>🚚 ${fmtDate(o.delivery_date)}</span>` : ''}
+            ${totalQty || cookieSummary.label ? `<span>🍪 ${_orderCookieDisplay(o)}</span>` : ''}
+            ${o.total ? `<span>💰 $${parseFloat(o.total).toFixed(2)}</span>` : ''}
+          </div>
+
+          ${varSummary ? `<div style="font-size:11px;font-family:sans-serif;color:var(--text-muted);margin-bottom:6px;">${varSummary}</div>` : ''}
+
+          ${(()=>{
+            const allBatches = _getOrderBatchNums(o);
+            if (!allBatches.length) return '';
+            const parts = allBatches.map(function(item){
+              if (item.source === 'icing') {
+                const b = batches.find(function(bx){ return String(bx.num) === String(item.num); });
+                if (b) {
+                  const batchIcingIds = new Set((b.icingEntries||[]).map(e=>String(e.id)));
+                  const qty = (o.cookie_allocations||[]).reduce(function(s,a){ return s+(batchIcingIds.has(String(a.icing_entry_id))?(a.qty||0):0); }, 0);
+                  return item.num + (qty ? ' (' + qty + ' allocated)' : '');
+                }
+              }
+              return item.num;
+            });
+            return `<div style="font-size:11px;font-family:sans-serif;color:var(--text-muted);margin-bottom:6px;">🥣 Batches: ${parts.join(', ')}</div>`;
+          })()}
+
+          ${(() => {
+            const revenue = (o.payments||[]).filter(p=>!p._meta).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);
+            const costs = (parseFloat(o.cost_packaging)||0)+(parseFloat(o.cost_ingredients)||0)+(parseFloat(o.cost_printing)||0)+(parseFloat(o.cost_social)||0)+(parseFloat(o.cost_extra_cookies)||0)+((o.other_expenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0));
+            const courierCost = (o.deliveries||[]).reduce((s,d)=>d.type==='Courier'?s+(parseFloat(d.courier_actual)||0):s,0);
+            const totalCosts = costs + courierCost;
+            const profit = revenue - totalCosts;
+            if (!revenue && !totalCosts) return '';
+            const profitColor = profit >= 0 ? 'var(--success)' : 'var(--danger)';
+            const profitLabel = profit >= 0 ? '$'+profit.toFixed(2) : '−$'+Math.abs(profit).toFixed(2);
+            return `<div style="font-size:12px;font-family:sans-serif;display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;padding:6px 8px;background:var(--gray-light);border-radius:var(--radius);">
+              ${revenue?`<span style="color:var(--text-muted);">Revenue: <strong>$${revenue.toFixed(2)}</strong></span>`:''}
+              ${totalCosts?`<span style="color:var(--text-muted);">Costs: <strong style="color:var(--danger);">−$${totalCosts.toFixed(2)}</strong></span>`:''}
+              <span style="color:var(--text-muted);">Net profit: <strong style="color:${profitColor};">${profitLabel}</strong></span>
+            </div>`;
+          })()}
+
+          ${o.notes ? `<div style="font-size:12px;font-family:sans-serif;font-style:italic;color:var(--text-muted);margin-bottom:6px;">"${esc(o.notes)}"</div>` : ''}
+
+          <!-- Message box: shown when "need to message" checkbox is ticked -->
+          ${flags.needToMessage ? `<div style="margin-bottom:6px;">
+            <textarea id="omsg-${o.id}" rows="2" placeholder="What do I need to say to this customer..."
+              onblur="saveOrderMessage('${o.id}')"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){saveOrderMessage('${o.id}');event.preventDefault();}"
+              style="width:100%;padding:5px 8px;border:1.5px solid #0071e3;border-radius:var(--radius);font-size:12px;background:#f0f7ff;color:var(--text);font-family:sans-serif;resize:vertical;box-sizing:border-box;">${esc(flags.messageText||'')}</textarea>
+          </div>` : ''}
+
+          <!-- Next action dropdown -->
+          <div style="margin-top:4px;">
+            <select onchange="saveOrderNextAction('${o.id}',this.value)"
+              style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:var(--white);color:${flags.nextAction?'var(--text)':'var(--text-muted)'};font-family:sans-serif;">
+              <option value="">${flags.nextAction?'— update next action —':'Next action...'}</option>
+              <option value="Arranging pick up time" ${flags.nextAction==='Arranging pick up time'?'selected':''}>Arranging pick up time</option>
+              <option value="Pickup confirmed" ${flags.nextAction==='Pickup confirmed'?'selected':''}>Pickup confirmed</option>
+              <option value="Arranging delivery" ${flags.nextAction==='Arranging delivery'?'selected':''}>Arranging delivery</option>
+              <option value="Delivery date confirmed" ${flags.nextAction==='Delivery date confirmed'?'selected':''}>Delivery date confirmed</option>
+            </select>
+          </div>
+
+          ${o.status === 'Delivered' || o.status === 'Completed' ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;margin-top:6px;"><span style="font-size:12px;font-family:sans-serif;color:var(--success);font-weight:600;">✓ Complete</span><button class="btn btn-sm" onclick="reopenOrder('${o.id}')" style="font-size:11px;padding:3px 10px;border-color:var(--orange);color:var(--orange);">↩ Reopen</button></div>` : ''}
         </div>
-        <div style="display:flex;gap:4px;flex-shrink:0;margin-left:8px;">
-          <button class="btn btn-sm" onclick="openEditOrderForm('${o.id}')">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteOrderFromList('${o.id}')">×</button>
-        </div>
       </div>
-
-      <!-- Pipeline dots -->
-      <div style="margin-bottom:6px;">${stageDots(o.status)}</div>
-
-      <!-- Dates & quantity -->
-      <div style="font-size:12px;font-family:sans-serif;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;">
-        ${urgDate ? `<span>📅 Due: <strong style="color:${isOverdue?'var(--danger)':isDueSoon?'var(--warning)':'var(--text)'}">${fmtDate(urgDate)}${daysUntil!==null && isActive?' ('+fmtDaysUntil(daysUntil)+')':''}</strong></span>` : ''}
-        ${o.delivery_date && o.delivery_date !== o.due_date ? `<span>🚚 ${fmtDate(o.delivery_date)}</span>` : ''}
-        ${totalQty || cookieSummary.label ? `<span>🍪 ${_orderCookieDisplay(o)}</span>` : ''}
-        ${o.total ? `<span>💰 $${parseFloat(o.total).toFixed(2)}</span>` : ''}
-      </div>
-
-      ${varSummary ? `<div style="font-size:11px;font-family:sans-serif;color:var(--text-muted);margin-bottom:6px;">${varSummary}</div>` : ''}
-
-      ${(()=>{
-        const allBatches = _getOrderBatchNums(o);
-        if (!allBatches.length) return '';
-        const parts = allBatches.map(function(item){
-          // Find confirmed qty for icing-derived batches
-          if (item.source === 'icing') {
-            const b = batches.find(function(bx){ return String(bx.num) === String(item.num); });
-            if (b) {
-              const batchIcingIds = new Set((b.icingEntries||[]).map(e=>String(e.id)));
-              const qty = (o.cookie_allocations||[]).reduce(function(s,a){ return s+(batchIcingIds.has(String(a.icing_entry_id))?(a.qty||0):0); }, 0);
-              return item.num + (qty ? ' (' + qty + ' allocated)' : '');
-            }
-          }
-          return item.num;
-        });
-        return `<div style="font-size:11px;font-family:sans-serif;color:var(--text-muted);margin-bottom:6px;">🥣 Batches: ${parts.join(', ')}</div>`;
-      })()}
-
-      ${(() => {
-        const revenue = (o.payments||[]).filter(p=>!p._meta).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);
-        const costs = (parseFloat(o.cost_packaging)||0)+(parseFloat(o.cost_ingredients)||0)+(parseFloat(o.cost_printing)||0)+(parseFloat(o.cost_social)||0)+(parseFloat(o.cost_extra_cookies)||0)+((o.other_expenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0));
-        const courierCost = (o.deliveries||[]).reduce((s,d)=>d.type==='Courier'?s+(parseFloat(d.courier_actual)||0):s,0);
-        const totalCosts = costs + courierCost;
-        const profit = revenue - totalCosts;
-        if (!revenue && !totalCosts) return '';
-        const profitColor = profit >= 0 ? 'var(--success)' : 'var(--danger)';
-        const profitLabel = profit >= 0 ? '$'+profit.toFixed(2) : '−$'+Math.abs(profit).toFixed(2);
-        return `<div style="font-size:12px;font-family:sans-serif;display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;padding:6px 8px;background:var(--gray-light);border-radius:var(--radius);">
-          ${revenue?`<span style="color:var(--text-muted);">Revenue: <strong>$${revenue.toFixed(2)}</strong></span>`:''}
-          ${totalCosts?`<span style="color:var(--text-muted);">Costs: <strong style="color:var(--danger);">−$${totalCosts.toFixed(2)}</strong></span>`:''}
-          <span style="color:var(--text-muted);">Net profit: <strong style="color:${profitColor};">${profitLabel}</strong></span>
-        </div>`;
-      })()}
-
-      ${o.notes ? `<div style="font-size:12px;font-family:sans-serif;font-style:italic;color:var(--text-muted);margin-bottom:6px;">"${esc(o.notes)}"</div>` : ''}
-
-      <!-- Quick note -->
-      <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-        <input id="qnote-${o.id}" placeholder="Quick note..." value=""
-          style="flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;background:var(--white);color:var(--text);font-family:sans-serif;"
-          onkeydown="if(event.key==='Enter'){saveQuickNote('${o.id}');event.preventDefault();}"/>
-        <button class="btn btn-sm" onclick="saveQuickNote('${o.id}')">Save note</button>
-      </div>
-
-      <!-- Advance stage button -->
-      ${next && isActive ? `
-      <button class="btn btn-primary btn-sm" style="width:100%;margin-top:2px;" onclick="advanceOrderStage('${o.id}','${next}')">
-        Mark as: ${next} →
-      </button>` : ''}
-      ${o.status === 'Delivered' ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:12px;font-family:sans-serif;color:var(--success);font-weight:600;">✓ Complete</span><button class="btn btn-sm" onclick="reopenOrder('${o.id}')" style="font-size:11px;padding:3px 10px;border-color:var(--orange);color:var(--orange);">↩ Reopen</button></div>` : ''}
     </div>`;
   }).join('');
 }
@@ -21542,6 +21623,42 @@ async function saveQuickNote(orderId) {
   await updateOrder(orderId, { notes: newNote });
   el.value = '';
   renderOrdersList();
+}
+
+// ── Order flags (need-to-message, all-sorted, next-action) stored in localStorage ──
+function getOrderFlags(orderId) {
+  try {
+    const raw = localStorage.getItem('oc_flags_' + orderId);
+    if (raw) return Object.assign({ needToMessage: false, messageText: '', allSorted: false, nextAction: '' }, JSON.parse(raw));
+  } catch(e) {}
+  return { needToMessage: false, messageText: '', allSorted: false, nextAction: '' };
+}
+function _saveOrderFlags(orderId, flags) {
+  localStorage.setItem('oc_flags_' + orderId, JSON.stringify(flags));
+}
+function toggleOrderNtm(orderId) {
+  const f = getOrderFlags(orderId);
+  f.needToMessage = !f.needToMessage;
+  _saveOrderFlags(orderId, f);
+  renderOrdersList();
+}
+function saveOrderMessage(orderId) {
+  const el = document.getElementById('omsg-' + orderId);
+  if (!el) return;
+  const f = getOrderFlags(orderId);
+  f.messageText = el.value;
+  _saveOrderFlags(orderId, f);
+}
+function toggleOrderSorted(orderId) {
+  const f = getOrderFlags(orderId);
+  f.allSorted = !f.allSorted;
+  _saveOrderFlags(orderId, f);
+  renderOrdersList();
+}
+function saveOrderNextAction(orderId, value) {
+  const f = getOrderFlags(orderId);
+  f.nextAction = value;
+  _saveOrderFlags(orderId, f);
 }
 
 // ── Open/Edit form ──
@@ -29266,7 +29383,7 @@ function renderOrderMultiPicker(containerId, selectedIds, onChange) {
   }
 
   var openOrders = orders.filter(function(o){
-    return o.status !== 'Delivered' && o.status !== 'Cancelled' && o.status !== 'Paid';
+    return !CLOSED_STATUSES.includes(o.status) && o.status !== 'Paid';
   });
 
   // Build tags
@@ -29398,7 +29515,7 @@ function addBkRecipientRow(prefill, containerOverride) {
   if (!container) return;
   var idx = Date.now();
   // Build order options
-  var openOrders = orders.filter(function(o){ return o.status !== 'Delivered' && o.status !== 'Cancelled'; });
+  var openOrders = orders.filter(function(o){ return !CLOSED_STATUSES.includes(o.status); });
   var orderOpts = '<option value="">— No order —</option>'
     + openOrders.map(function(o){
         var c = (cfg.customers||[]).find(function(x){ return String(x.id)===String(o.customer_id); });
@@ -29594,7 +29711,7 @@ async function exportAllData() {
 
   const snapshot = {
     exported_at: new Date().toISOString(),
-    app_version: 'v45.0',
+    app_version: 'v46.0',
     tables: {}
   };
 
